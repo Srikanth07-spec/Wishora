@@ -1,0 +1,685 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wishora | Personal Greeting Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0c0915; --panel:#151120; --panel2:#1c162a;
+  --line:#30263f; --text:#f8f5ff; --muted:#aaa1bb;
+  --purple:#a78bfa; --pink:#f0abfc; --red:#fb7185;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{background:radial-gradient(ellipse at 70% 0%,#311c4a55,transparent 40%),var(--bg);color:var(--text);font:14px "DM Sans",sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;flex-shrink:0;background:#100c1b;border-right:1px solid var(--line);padding:25px 16px;display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;z-index:10;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px 28px;font:800 26px Outfit,sans-serif;letter-spacing:-1px}
+.brand-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#8b5cf6,#ec4899);font-size:23px}
+.brand-name{background:linear-gradient(90deg,#c4b5fd,#f9a8d4);color:transparent;background-clip:text}
+.menu-label{font-size:10px;color:#786d8c;letter-spacing:1.8px;font-weight:700;padding:12px}
+.nav-btn{width:100%;border:0;background:transparent;color:var(--muted);display:flex;align-items:center;gap:12px;text-align:left;padding:12px 14px;border-radius:12px;margin:3px 0}
+.nav-btn:hover,.nav-btn.active{background:linear-gradient(100deg,#8b5cf625,#d946ef12);color:#d9c7ff}
+.nav-btn.active{box-shadow:inset 3px 0 var(--purple)}
+.nav-btn .ico{width:23px;font-size:18px;text-align:center}
+.side-bottom{margin-top:auto;border:1px solid var(--line);background:var(--panel);padding:14px;border-radius:14px}
+.side-bottom p{color:var(--muted);font-size:12px;line-height:1.6;margin-top:7px}
+.main{margin-left:245px;width:calc(100% - 245px);min-width:0}
+.topbar{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;background:#0c0915dd;position:sticky;top:0;z-index:5;backdrop-filter:blur(18px)}
+.top-title{font:600 17px Outfit,sans-serif}
+.top-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.user-area{display:flex;align-items:center;gap:11px}
+.avatar{width:39px;height:39px;object-fit:cover;border-radius:50%;background:#39294e;border:2px solid #a78bfa88}
+.user-name{font-weight:700;font-size:12px}
+.user-email{font-size:11px;color:var(--muted);margin-top:3px;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+.logout{background:#ffffff08;border:1px solid var(--line);color:#fda4af;border-radius:10px;padding:10px 12px}
+.content{max-width:1450px;margin:auto;padding:30px}
+.page{display:none}.page.active{display:block}
+h1,h2,h3{font-family:Outfit,sans-serif}
+h1{font-size:clamp(29px,3vw,43px);line-height:1.15;letter-spacing:-1px}
+h2{font-size:21px}h3{font-size:16px}
+.gradient{background:linear-gradient(90deg,#c4b5fd,#f9a8d4);color:transparent;background-clip:text}
+.muted{color:var(--muted);line-height:1.7}
+.eyebrow{font-size:10px;letter-spacing:2px;color:#c4b5fd;font-weight:700;margin-bottom:12px}
+.welcome{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:27px}
+.welcome p{max-width:650px;margin-top:12px}
+.date-chip{border:1px solid var(--line);background:var(--panel);border-radius:13px;padding:13px 16px;color:#d7c9f5;font-size:12px}
+.grid{display:grid;gap:18px}
+.home-grid{grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr)}
+.card{background:linear-gradient(145deg,#1a1427,#13101d);border:1px solid var(--line);border-radius:19px;padding:22px;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.card-head p{font-size:12px;color:var(--muted);margin-top:5px}
+.clock-layout{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.clock{width:174px;height:174px;flex-shrink:0;border-radius:50%;position:relative;background:radial-gradient(circle,#20182f,#171020 72%);border:3px solid #8b5cf655;box-shadow:0 0 0 8px #8b5cf610,0 10px 35px #0005}
+.tick{position:absolute;inset:8px;text-align:center;transform:rotate(calc(var(--i)*30deg));font:600 13px Outfit,sans-serif;color:#e7ddff}
+.tick span{display:inline-block}
+.hand{position:absolute;left:50%;bottom:50%;transform-origin:50% 100%;border-radius:8px;transform:translateX(-50%) rotate(0deg)}
+.hour{width:5px;height:43px;background:#f5d0fe}
+.minute{width:3px;height:60px;background:#c4b5fd}
+.second{width:2px;height:67px;background:#f472b6}
+.pin{position:absolute;left:50%;top:50%;width:11px;height:11px;background:white;border:3px solid #a78bfa;border-radius:50%;transform:translate(-50%,-50%);z-index:3}
+.digital{font:700 28px Outfit,sans-serif;letter-spacing:1px}
+.digital-date{font-size:12px;color:var(--muted);margin-top:7px}
+.small-label{font-size:10px;letter-spacing:1.4px;color:#a99bbc;text-transform:uppercase;margin-bottom:8px}
+.clock-note{font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+.btn{border:0;border-radius:11px;background:linear-gradient(110deg,#8b5cf6,#c026d3);color:white;font-weight:700;padding:12px 16px;transition:.2s}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn.secondary{background:#ffffff08;border:1px solid var(--line);color:#ddd2f4}
+.btn.danger{background:#e11d4820;border:1px solid #e11d4844;color:#fda4af}
+.btn-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+.quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.quick{border:1px solid var(--line);background:#ffffff04;border-radius:14px;padding:17px;text-align:left;color:white;transition:.2s}
+.quick:hover{border-color:#a78bfa88;transform:translateY(-2px)}
+.quick-icon{font-size:24px;margin-bottom:12px}
+.quick h3{margin-bottom:6px}
+.quick p{font-size:11px;color:var(--muted);line-height:1.6}
+.upcoming{margin-top:19px}
+.event-row{display:flex;align-items:flex-start;gap:13px;border-top:1px solid var(--line);padding:14px 0}
+.event-date{width:48px;flex-shrink:0;text-align:center;background:#a78bfa18;border-radius:11px;padding:8px 4px}
+.event-date strong{display:block;font:700 20px Outfit,sans-serif}
+.event-date span{font-size:9px;color:#c4b5fd;text-transform:uppercase}
+.event-info{flex:1;min-width:0}
+.event-info h3{font-size:14px}
+.event-info p{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6;overflow-wrap:anywhere}
+.empty{color:var(--muted);font-size:12px;padding:15px 0}
+.section-intro{margin:9px 0 22px;color:var(--muted);line-height:1.7}
+.two-col{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:15px}
+.field label{font-size:12px;color:#d4c9e5;font-weight:600}
+.field input,.field select,.field textarea,.search{width:100%;border:1px solid var(--line);background:#0e0b17;color:#fff;border-radius:10px;padding:12px;outline:none}
+.field textarea{min-height:105px;resize:vertical;line-height:1.7}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#a78bfa}
+.field option{background:#171020}
+.field input::placeholder,.field textarea::placeholder{color:#756b86}
+.calendar-controls{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.month-title{font:600 18px Outfit,sans-serif;flex:1}
+.icon-btn{background:#ffffff08;color:#e4d9f8;border:1px solid var(--line);border-radius:9px;width:35px;height:35px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.weekday{text-align:center;color:#8d829f;font-size:10px;padding:12px 0}
+.day{min-height:70px;border:1px solid transparent;background:#ffffff04;color:#e7def5;border-radius:10px;position:relative;padding:5px 3px;overflow:hidden}
+.day:hover{background:#a78bfa19;border-color:#a78bfa77}
+.day.muted-day{color:#655b75}
+.day.today{border-color:#a78bfa}
+.day.selected{background:linear-gradient(140deg,#8b5cf6,#a855f7);color:white}
+.day.holiday{color:#fda4af;border-color:#fb718533;background:#fb71850d}
+.day.holiday .day-number{color:#fb7185}
+.day.selected .day-number{color:white}
+.day-number{display:block;font-weight:700;font-size:12px}
+.day-event-label{display:block;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;line-height:1.5;margin-top:4px;color:#d8b4fe}
+.day-holiday-label{display:block;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;line-height:1.5;margin-top:3px;color:#fb7185}
+.day.selected .day-event-label,.day.selected .day-holiday-label{color:white}
+.selected-date{color:#c4b5fd;font-size:12px;margin-top:17px}
+.event-list{margin-top:12px}
+.template{border:1px solid var(--line);background:#ffffff04;border-radius:13px;padding:14px;margin-bottom:10px}
+.template p{font-size:12px;color:var(--muted);line-height:1.7;margin-top:7px;white-space:pre-wrap;overflow-wrap:anywhere}
+.holiday-list{margin-top:12px}
+.holiday-item{display:flex;gap:12px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}
+.holiday-date{min-width:56px;text-align:center;background:#fb718514;border:1px solid #fb71852b;border-radius:11px;padding:8px;color:#fda4af}
+.holiday-date strong{display:block;font:700 20px Outfit}
+.holiday-date span{font-size:10px}
+.holiday-item p{color:var(--muted);font-size:11px;margin-top:4px}
+.preview-card{position:relative;overflow:hidden;border-radius:18px;min-height:340px;padding:25px;background:linear-gradient(140deg,#371765,#9b287d,#f472b6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;isolation:isolate}
+.preview-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,#ffffff35,transparent 25%),radial-gradient(circle at 80% 75%,#ffffff25,transparent 28%);z-index:-1}
+.preview-card .preview-title{font:800 30px Outfit,sans-serif;line-height:1.2}
+.preview-card .preview-message{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;margin-top:17px;max-width:480px}
+.preview-card img{max-width:100%;max-height:170px;object-fit:contain;border-radius:13px;margin:0 auto 16px}
+.preview-decor{font-size:30px;letter-spacing:8px;margin-bottom:15px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.preview-card.confetti:after{content:"✦  ✧  ✦  ✧  ✦";position:absolute;top:12px;right:10px;left:10px;font-size:22px;letter-spacing:18px;opacity:.65;pointer-events:none}
+.preview-card.balloons .preview-decor{animation:float 2s ease-in-out infinite}
+.preview-card.romantic{background:linear-gradient(140deg,#4c0519,#be185d,#fb7185)}
+.preview-card.sunshine{background:linear-gradient(140deg,#713f12,#ca8a04,#f9a8d4)}
+.preview-card.ocean{background:linear-gradient(140deg,#082f49,#6d28d9,#a78bfa)}
+.preview-card.midnight{background:linear-gradient(140deg,#09090b,#312e81,#6d28d9)}
+.color-row{display:flex;gap:8px;align-items:center}
+.color-row input{width:48px;height:40px;padding:3px}
+.small{font-size:11px;color:var(--muted);line-height:1.6}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#251a36;border:1px solid #a78bfa66;border-radius:12px;padding:13px 17px;z-index:30;max-width:90%;box-shadow:0 10px 40px #0008}
+.loading-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;color:#c4b5fd}
+.spinner{width:26px;height:26px;border:3px solid #ffffff22;border-top-color:#c4b5fd;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1050px){.sidebar{width:210px}.main{margin-left:210px;width:calc(100% - 210px)}.content{padding:24px}.home-grid,.two-col{grid-template-columns:1fr}}
+@media(max-width:700px){.sidebar{width:65px;padding:18px 7px}.brand{padding:0 5px 25px}.brand-name,.menu-label,.nav-text,.side-bottom{display:none}.nav-btn{justify-content:center;padding:14px 4px}.nav-btn .ico{font-size:20px}.main{margin-left:65px;width:calc(100% - 65px)}.topbar{padding:0 10px;height:68px}.top-sub,.user-info{display:none}.content{padding:17px 11px}.welcome{align-items:flex-start;flex-direction:column}.clock-layout{justify-content:center}.clock{width:155px;height:155px}.digital{text-align:center;font-size:23px}.calendar-grid{gap:2px}.day{min-height:51px;padding:4px 2px}.day-event-label,.day-holiday-label{font-size:8px}.weekday{font-size:9px}.quick-grid{gap:8px}.quick{padding:12px}.card{padding:15px}.logout{font-size:10px;padding:9px}.avatar{width:32px;height:32px}.preview-card{padding:18px;min-height:300px}.preview-card .preview-title{font-size:25px}}
+</style>
+</head>
+<body>
+<div id="loading" class="loading-screen">
+  <div class="brand-icon">✦</div><div>Opening your Wishora space...</div><div class="spinner"></div>
+</div>
+<div id="errorScreen" class="loading-screen" hidden>
+  <h2>Unable to open Wishora</h2><p id="errorText" class="muted"></p>
+  <button class="btn" onclick="location.reload()">Try again</button>
+</div>
+
+<div id="app" class="app" hidden>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">✦</div><span class="brand-name">Wishora</span></div>
+    <div class="menu-label">WORKSPACE</div>
+    <button class="nav-btn active" data-page="home"><span class="ico">⌂</span><span class="nav-text">Home</span></button>
+    <button class="nav-btn" data-page="calendar"><span class="ico">▦</span><span class="nav-text">Calendar & Holidays</span></button>
+    <button class="nav-btn" data-page="greeting"><span class="ico">💌</span><span class="nav-text">Greeting Studio</span></button>
+    <button class="nav-btn" data-page="contacts"><span class="ico">♧</span><span class="nav-text">Contacts</span></button>
+    <button class="nav-btn" data-page="greetings"><span class="ico">♡</span><span class="nav-text">Saved Greetings</span></button>
+    <div class="menu-label">PERSONAL</div>
+    <button class="nav-btn" data-page="settings"><span class="ico">⚙</span><span class="nav-text">Settings</span></button>
+    <div class="side-bottom"><strong>✦ A little kindness</strong><p>One thoughtful message can make someone's whole day.</p></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div><div id="topTitle" class="top-title">Home</div><div class="top-sub">Your personal greeting assistant</div></div>
+      <div class="user-area">
+        <img id="avatar" class="avatar" alt="Profile photo" src="https://placehold.co/80x80/302447/ffffff?text=W">
+        <div class="user-info"><div id="userName" class="user-name">Friend</div><div id="userEmail" class="user-email"></div></div>
+        <button id="logout" class="logout">Log out ↗</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <section id="page-home" class="page active">
+        <div class="welcome">
+          <div><div class="eyebrow">✦ YOUR PERSONAL GREETING STUDIO</div>
+            <h1 id="welcomeText">Welcome to <span class="gradient">Wishora</span>!</h1>
+            <p class="muted">Plan important days, discover upcoming holidays, and create beautiful greetings for the people you love.</p>
+          </div>
+          <div id="todayChip" class="date-chip"></div>
+        </div>
+        <div class="grid home-grid">
+          <div class="card">
+            <div class="card-head"><div><h2>Your live clock</h2><p>Current time on your device</p></div><span>✧</span></div>
+            <div class="clock-layout">
+              <div class="clock">
+                <div class="tick" style="--i:0"><span>12</span></div><div class="tick" style="--i:1"><span>1</span></div>
+                <div class="tick" style="--i:2"><span>2</span></div><div class="tick" style="--i:3"><span>3</span></div>
+                <div class="tick" style="--i:4"><span>4</span></div><div class="tick" style="--i:5"><span>5</span></div>
+                <div class="tick" style="--i:6"><span>6</span></div><div class="tick" style="--i:7"><span>7</span></div>
+                <div class="tick" style="--i:8"><span>8</span></div><div class="tick" style="--i:9"><span>9</span></div>
+                <div class="tick" style="--i:10"><span>10</span></div><div class="tick" style="--i:11"><span>11</span></div>
+                <div id="hourHand" class="hand hour"></div><div id="minuteHand" class="hand minute"></div>
+                <div id="secondHand" class="hand second"></div><div class="pin"></div>
+              </div>
+              <div><div class="small-label">LOCAL TIME</div><div id="digitalTime" class="digital">--:--:--</div><div id="digitalDate" class="digital-date"></div><p class="clock-note">Your analog and digital clocks update together.</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>Your shortcuts</h2><p>Make something meaningful.</p></div></div>
+            <div class="quick-grid">
+              <button class="quick" data-go="calendar"><div class="quick-icon">📅</div><h3>Plan an event</h3><p>Add a date and time to your calendar.</p></button>
+              <button class="quick" data-go="greeting"><div class="quick-icon">✨</div><h3>Create greeting</h3><p>Design a personalized greeting card.</p></button>
+              <button class="quick" data-go="contacts"><div class="quick-icon">💌</div><h3>My people</h3><p>Keep your contact details.</p></button>
+              <button class="quick" data-go="greetings"><div class="quick-icon">💜</div><h3>Saved greetings</h3><p>Review your greeting collection.</p></button>
+            </div>
+          </div>
+        </div>
+        <div class="grid two-col upcoming">
+          <div class="card"><div class="card-head"><div><h2>Upcoming events</h2><p>Your own planned calendar events.</p></div><button class="btn secondary" data-go="calendar">Calendar →</button></div><div id="homeEvents"></div></div>
+          <div class="card"><div class="card-head"><div><h2>Upcoming holidays</h2><p>Selected Indian holidays.</p></div><button class="btn secondary" data-go="calendar">View all →</button></div><div id="homeHolidays"></div></div>
+        </div>
+      </section>
+
+      <section id="page-calendar" class="page">
+        <div class="eyebrow">PLAN AHEAD ✦</div><h1>Calendar & <span class="gradient">Holidays</span></h1>
+        <p class="section-intro">Public holidays are marked in red. Your own events appear on their dates with the event name.</p>
+        <div class="grid two-col">
+          <div class="card">
+            <div class="card-head"><div><h2>Your calendar</h2><p>Choose a date to view or add events.</p></div></div>
+            <div class="calendar-controls"><button id="prevMonth" class="icon-btn">←</button><div id="monthTitle" class="month-title"></div><button id="nextMonth" class="icon-btn">→</button></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <p class="small" style="margin-top:12px"><span style="color:#fb7185">● Holiday</span> &nbsp; <span style="color:#c4b5fd">● Your event</span> &nbsp; <span style="color:#a78bfa">● Today</span></p>
+            <div id="selectedDateLabel" class="selected-date"></div>
+            <div id="selectedEvents" class="event-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>Add a calendar event</h2><p>Only an event reminder—no greeting is required.</p></div></div>
+            <form id="eventForm">
+              <div class="field"><label for="eventTitle">Event name</label><input id="eventTitle" required maxlength="80" placeholder="e.g. Cousin's Birthday"></div>
+              <div class="field"><label for="eventPerson">Person / relationship</label><select id="eventPerson"><option value="">Choose a relationship</option><option>Friend</option><option>Relative</option><option>Cousin</option><option>Love</option><option>Mother</option><option>Father</option><option>Sibling</option><option>Colleague</option><option>My own event</option><option>Other</option></select></div>
+              <div class="field"><label for="eventDate">Date</label><input id="eventDate" type="date" required></div>
+              <div class="field"><label for="eventTime">Time</label><input id="eventTime" type="time" required value="09:00"></div>
+              <button class="btn" type="submit">Add to calendar +</button>
+            </form>
+            <p class="clock-note">Events are saved in this browser and displayed on the calendar. This demo does not send notifications automatically.</p>
+            <div class="card-head" style="margin-top:28px"><div><h2>Upcoming holidays</h2><p>Holidays within the next 12 months.</p></div></div>
+            <div id="holidayList" class="holiday-list"></div>
+            <p class="small">Holiday dates may vary by state or local observance. Verify official dates before relying on them.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-greeting" class="page">
+        <div class="eyebrow">MAKE SOMEONE SMILE ✦</div><h1>Greeting <span class="gradient">Studio</span></h1>
+        <p class="section-intro">Create a colorful, personal greeting. Add a photo, customize the text, preview the design, and save a delivery plan.</p>
+        <div class="grid two-col">
+          <div class="card">
+            <h2 style="margin-bottom:18px">1. Greeting details</h2>
+            <form id="greetingForm">
+              <div class="field"><label for="gOccasion">Occasion</label><select id="gOccasion"><option>Birthday</option><option>Love</option><option>Friendship</option><option>Anniversary</option><option>Festival</option><option>Thank You</option><option>Congratulations</option><option>Get Well Soon</option><option>Just Because</option></select></div>
+              <div class="field"><label for="gRecipient">Recipient name</label><input id="gRecipient" required maxlength="80" placeholder="Who is this greeting for?"></div>
+              <div class="field"><label for="gRelationship">Relationship</label><select id="gRelationship"><option>Friend</option><option>Relative</option><option>Cousin</option><option>Love</option><option>Mother</option><option>Father</option><option>Sibling</option><option>Colleague</option><option>Other</option></select></div>
+              <div class="field"><label for="gChannel">Delivery preference</label><select id="gChannel"><option value="sms">Mobile SMS notification</option><option value="whatsapp">WhatsApp message</option><option value="email">Email</option><option value="link">Shareable greeting link</option></select></div>
+              <div class="field"><label for="gPhone">Recipient mobile number</label><input id="gPhone" type="tel" placeholder="+91 9876543210"></div>
+              <div class="field"><label for="gEmail">Recipient email</label><input id="gEmail" type="email" placeholder="friend@example.com"></div>
+              <div class="field"><label for="gDate">Delivery date</label><input id="gDate" type="date" required></div>
+              <div class="field"><label for="gTime">Delivery time</label><input id="gTime" type="time" required value="09:00"></div>
+              <p class="small" style="margin-bottom:15px">Enter a mobile number for SMS/WhatsApp, or an email address for email delivery. The selected channel must be configured on a server before actual sending works.</p>
+              <h2 style="margin:24px 0 16px">2. Personalize the card</h2>
+              <div class="field"><label for="gTitle">Card heading</label><input id="gTitle" maxlength="100" value="A Special Wish for You ✨"></div>
+              <div class="field"><label for="gMessage">Your message</label><textarea id="gMessage" required maxlength="3000" placeholder="Write a thoughtful message..."></textarea></div>
+              <div class="field"><label for="gPhoto">Optional photo</label><input id="gPhoto" type="file" accept="image/*"><span class="small">Choose a picture from your device. For this demo, the preview uses a local image.</span></div>
+              <div class="field"><label for="gTheme">Card design</label><select id="gTheme"><option value="dream">Dreamy Purple</option><option value="romantic">Romantic Pink</option><option value="sunshine">Golden Sunshine</option><option value="ocean">Ocean Magic</option><option value="midnight">Midnight Sparkle</option></select></div>
+              <div class="field"><label for="gEffect">Decoration</label><select id="gEffect"><option value="sparkles">✨ Sparkles</option><option value="balloons">🎈 Balloons</option><option value="confetti">🎊 Confetti</option><option value="hearts">💖 Hearts</option><option value="flowers">🌸 Flowers</option><option value="none">No decoration</option></select></div>
+              <div class="field"><label for="gColor">Message text color</label><div class="color-row"><input id="gColor" type="color" value="#ffffff"><span class="small">Choose a color for your message.</span></div></div>
+              <div class="field"><label for="gSize">Message text size</label><select id="gSize"><option value="14">Small</option><option value="17" selected>Medium</option><option value="21">Large</option><option value="25">Extra large</option></select></div>
+              <div class="btn-row"><button class="btn" type="button" id="saveGreeting">Save greeting & plan</button><button class="btn secondary" type="button" id="resetGreeting">Reset design</button></div>
+            </form>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>Live greeting preview</h2><p>Your design updates while you edit it.</p></div><span>✦</span></div>
+            <div id="preview" class="preview-card">
+              <div id="previewDecor" class="preview-decor">✨ ✧ ✨</div>
+              <img id="previewImage" alt="Greeting photo preview" hidden>
+              <h2 id="previewTitle" class="preview-title">A Special Wish for You ✨</h2>
+              <div id="previewRecipient" style="font:600 18px Outfit,sans-serif;margin-top:12px">Your special person</div>
+              <p id="previewMessage" class="preview-message">Your heartfelt message will appear here.</p>
+              <p style="margin-top:22px;font:600 14px Outfit,sans-serif">Made with love · Wishora</p>
+            </div>
+            <div class="btn-row"><button class="btn secondary" type="button" id="copyGreeting">Copy message text</button><button class="btn secondary" type="button" id="previewGreeting">Preview full card</button></div>
+            <div class="template" style="margin-top:18px">
+              <h3>How scheduled delivery works</h3>
+              <p>1. Customize and save your greeting plan.<br>2. Connect a secure backend and SMS, WhatsApp, or email provider.<br>3. The backend sends the greeting at the scheduled time.<br><br>This front-end demo saves the plan but does not deliver messages by itself.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-contacts" class="page">
+        <div class="eyebrow">YOUR IMPORTANT PEOPLE ✦</div><h1>Friends & <span class="gradient">Family</span></h1>
+        <p class="section-intro">Save contact details for quicker greeting creation.</p>
+        <div class="grid two-col">
+          <div class="card"><h2 style="margin-bottom:18px">Add a contact</h2>
+            <form id="contactForm">
+              <div class="field"><label for="contactName">Full name</label><input id="contactName" required maxlength="80" placeholder="Friend or relative's name"></div>
+              <div class="field"><label for="contactRelation">Relationship</label><select id="contactRelation"><option>Friend</option><option>Family</option><option>Parent</option><option>Sibling</option><option>Relative</option><option>Cousin</option><option>Partner</option><option>Colleague</option><option>Other</option></select></div>
+              <div class="field"><label for="contactPhone">Mobile number (optional)</label><input id="contactPhone" type="tel" placeholder="+91 ..."></div>
+              <div class="field"><label for="contactEmail">Email (optional)</label><input id="contactEmail" type="email" placeholder="name@example.com"></div>
+              <div class="field"><label for="contactBirthday">Birthday (optional)</label><input id="contactBirthday" type="date"></div>
+              <button class="btn" type="submit">Save contact +</button>
+            </form>
+          </div>
+          <div class="card"><div class="card-head"><div><h2>My contacts</h2><p>Stored in this browser.</p></div></div><div id="contactList"></div></div>
+        </div>
+      </section>
+
+      <section id="page-greetings" class="page">
+        <div class="eyebrow">YOUR COLLECTION ✦</div><h1>Saved <span class="gradient">Greetings</span></h1>
+        <p class="section-intro">Your saved designs and scheduled delivery plans.</p><div class="card"><div id="greetingList"></div></div>
+      </section>
+
+      <section id="page-settings" class="page">
+        <div class="eyebrow">YOUR EXPERIENCE ✦</div><h1>Settings</h1>
+        <p class="section-intro">Account and local data options.</p>
+        <div class="card"><h2>Account</h2><p id="settingsEmail" class="muted" style="margin:10px 0 22px"></p>
+          <h3>Local data</h3><p class="muted" style="margin:8px 0 15px">Events, contacts, and greetings are stored in this browser only. They are not automatically synced to another device.</p>
+          <button id="clearData" class="btn danger" type="button">Clear local Wishora data</button>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyDxvV9EnEsloJqwPRfSWq6Cx1jXUTMgoZI",
+  authDomain:"wishora-3c1cf.firebaseapp.com",
+  projectId:"wishora-3c1cf",
+  storageBucket:"wishora-3c1cf.firebasestorage.app",
+  messagingSenderId:"537135329930",
+  appId:"1:537135329930:web:6c35b706067e5c04bc3373",
+  measurementId:"G-BHFN51VLCK"
+};
+
+const $=id=>document.getElementById(id);
+const keys={events:"wishora_events_v2",contacts:"wishora_contacts_v2",greetings:"wishora_greetings_v2"};
+let auth,currentUser=null,photoData="",calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1),selectedDate=localDateString(new Date());
+
+function localDateString(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function read(key){
+  try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []}
+}
+function write(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function id(){return crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)}
+function escapeHTML(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function toast(message){
+  $("toast").textContent=message;$("toast").hidden=false;
+  setTimeout(()=>$("toast").hidden=true,2800);
+}
+function showError(message){
+  $("loading").hidden=true;$("app").hidden=true;$("errorScreen").hidden=false;$("errorText").textContent=message;
+}
+function greetingByTime(){
+  const h=new Date().getHours();
+  if(h>=5&&h<12)return "Good morning";
+  if(h>=12&&h<17)return "Good afternoon";
+  if(h>=17&&h<21)return "Good evening";
+  return "Good night";
+}
+
+try{
+  auth=getAuth(initializeApp(firebaseConfig));
+  onAuthStateChanged(auth,user=>{
+    if(!user){location.replace("login.html");return}
+    currentUser=user;
+    const name=user.displayName?.trim()||user.email?.split("@")[0]||"Friend";
+    $("userName").textContent=name;$("userEmail").textContent=user.email||"";
+    $("settingsEmail").textContent=user.email||"Signed in";
+    $("avatar").src=user.photoURL||"https://placehold.co/80x80/302447/ffffff?text=W";
+    $("loading").hidden=true;$("errorScreen").hidden=true;$("app").hidden=false;
+    updateClock();renderAll();
+  },error=>{
+    console.error(error);showError("Firebase could not verify your session. Check Console (F12) for details.");
+  });
+}catch(error){
+  console.error(error);showError("Firebase failed to initialize. Check your configuration and internet connection.");
+}
+
+$("logout").addEventListener("click",async()=>{
+  const btn=$("logout");btn.disabled=true;
+  try{await signOut(auth);location.replace("login.html")}
+  catch(e){console.error(e);toast("Logout failed. Please try again.");btn.disabled=false}
+});
+
+function updateClock(){
+  const now=new Date(),h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+  $("hourHand").style.transform=`translateX(-50%) rotate(${(h%12)*30+m*.5}deg)`;
+  $("minuteHand").style.transform=`translateX(-50%) rotate(${m*6+s*.1}deg)`;
+  $("secondHand").style.transform=`translateX(-50%) rotate(${s*6}deg)`;
+  $("digitalTime").textContent=now.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  $("digitalDate").textContent=now.toLocaleDateString([],{weekday:"long",month:"short",day:"numeric",year:"numeric"});
+  $("todayChip").textContent=now.toLocaleDateString([],{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+  const name=(currentUser?.displayName||currentUser?.email?.split("@")[0]||"Friend").split(/\s+/)[0];
+  $("welcomeText").innerHTML=`${greetingByTime()}, <span class="gradient">${escapeHTML(name)}</span>!`;
+}
+setInterval(updateClock,1000);
+
+function go(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $("page-"+page).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  const names={home:"Home",calendar:"Calendar & Holidays",greeting:"Greeting Studio",contacts:"Contacts",greetings:"Saved Greetings",settings:"Settings"};
+  $("topTitle").textContent=names[page]||"Home";
+  if(page==="calendar")renderCalendar();
+  if(page==="contacts")renderContacts();
+  if(page==="greetings")renderGreetings();
+  if(page==="home")renderHome();
+}
+document.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
+
+/* Holiday list: selected India-wide/common observances.
+   Dates should be checked against the official holiday calendar for your state. */
+const holidays=[
+  {date:"2026-10-20",name:"Dussehra / Vijayadashami"},
+  {date:"2026-11-08",name:"Diwali / Deepavali"},
+  {date:"2026-11-24",name:"Guru Nanak Jayanti"},
+  {date:"2026-12-25",name:"Christmas Day"},
+  {date:"2027-01-01",name:"New Year's Day"},
+  {date:"2027-01-14",name:"Makar Sankranti"},
+  {date:"2027-01-26",name:"Republic Day"},
+  {date:"2027-03-06",name:"Maha Shivaratri (date may vary)"},
+  {date:"2027-03-10",name:"Eid-ul-Fitr (tentative; moon sighting)"},
+  {date:"2027-03-22",name:"Holi (date may vary)"},
+  {date:"2027-03-26",name:"Good Friday"},
+  {date:"2027-05-17",name:"Eid-ul-Adha (tentative; moon sighting)"},
+  {date:"2027-08-15",name:"Independence Day"},
+  {date:"2027-08-25",name:"Milad-un-Nabi (tentative; moon sighting)"},
+  {date:"2027-10-02",name:"Gandhi Jayanti"},
+  {date:"2027-10-09",name:"Dussehra / Vijayadashami (verify local calendar)"},
+  {date:"2027-11-04",name:"Diwali (verify local calendar)"},
+  {date:"2027-12-25",name:"Christmas Day"}
+];
+function holidayOn(date){return holidays.filter(h=>h.date===date)}
+function upcomingHolidays(limit=6){
+  const today=localDateString(new Date());
+  return holidays.filter(h=>h.date>=today).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,limit);
+}
+function renderHolidayList(target,limit=12){
+  const list=upcomingHolidays(limit);
+  $(target).innerHTML=list.length?list.map(h=>{
+    const d=new Date(h.date+"T12:00:00");
+    return `<div class="holiday-item"><div class="holiday-date"><strong>${d.getDate()}</strong><span>${d.toLocaleDateString([],{month:"short"})}</span></div><div><h3>${escapeHTML(h.name)}</h3><p>${d.toLocaleDateString([],{weekday:"long",year:"numeric",month:"long",day:"numeric"})}</p></div></div>`;
+  }).join(""):'<div class="empty">No upcoming holidays listed.</div>';
+}
+
+function renderCalendar(){
+  const year=calendarMonth.getFullYear(),month=calendarMonth.getMonth();
+  $("monthTitle").textContent=calendarMonth.toLocaleDateString([],{month:"long",year:"numeric"});
+  const grid=$("calendarGrid");grid.innerHTML="";
+  ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(day=>{
+    const el=document.createElement("div");el.className="weekday";el.textContent=day;grid.appendChild(el);
+  });
+  const first=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate(),prevDays=new Date(year,month,0).getDate();
+  const events=read(keys.events);
+  for(let i=0;i<42;i++){
+    let n,date,other=false;
+    if(i<first){n=prevDays-first+i+1;date=new Date(year,month-1,n);other=true}
+    else if(i>=first+days){n=i-first-days+1;date=new Date(year,month+1,n);other=true}
+    else{n=i-first+1;date=new Date(year,month,n)}
+    const key=localDateString(date),dayEvents=events.filter(e=>e.date===key),dayHolidays=holidayOn(key);
+    const el=document.createElement("button");el.type="button";el.className="day";
+    if(other)el.classList.add("muted-day");
+    if(key===localDateString(new Date()))el.classList.add("today");
+    if(key===selectedDate)el.classList.add("selected");
+    if(dayHolidays.length)el.classList.add("holiday");
+    el.innerHTML=`<span class="day-number">${n}</span>`+
+      dayHolidays.slice(0,1).map(h=>`<span class="day-holiday-label" title="${escapeHTML(h.name)}">★ ${escapeHTML(h.name)}</span>`).join("")+
+      dayEvents.slice(0,2).map(e=>`<span class="day-event-label" title="${escapeHTML(e.title)}">• ${escapeHTML(e.title)}</span>`).join("")+
+      (dayEvents.length>2?`<span class="day-event-label">+${dayEvents.length-2} more</span>`:"");
+    el.title=[...dayHolidays.map(h=>h.name),...dayEvents.map(e=>e.title)].join(" | ");
+    el.addEventListener("click",()=>{
+      selectedDate=key;
+      if(date.getMonth()!==calendarMonth.getMonth())calendarMonth=new Date(date.getFullYear(),date.getMonth(),1);
+      $("eventDate").value=key;renderCalendar();
+    });
+    grid.appendChild(el);
+  }
+  $("selectedDateLabel").textContent="Selected: "+new Date(selectedDate+"T12:00:00").toLocaleDateString([],{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+  renderSelectedEvents();
+}
+$("prevMonth").addEventListener("click",()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);renderCalendar()});
+$("nextMonth").addEventListener("click",()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);renderCalendar()});
+$("eventDate").value=selectedDate;
+$("eventDate").addEventListener("change",()=>{
+  if(!$("eventDate").value)return;
+  selectedDate=$("eventDate").value;
+  const d=new Date(selectedDate+"T12:00:00");calendarMonth=new Date(d.getFullYear(),d.getMonth(),1);renderCalendar();
+});
+
+function renderSelectedEvents(){
+  const events=read(keys.events).filter(e=>e.date===selectedDate).sort((a,b)=>a.time.localeCompare(b.time));
+  const hols=holidayOn(selectedDate);
+  $("selectedEvents").innerHTML=
+    hols.map(h=>`<div class="template"><h3 style="color:#fb7185">★ ${escapeHTML(h.name)}</h3><p>Public holiday listing · Verify local observance.</p></div>`).join("")+
+    (events.length?events.map(e=>`<div class="template"><h3>${escapeHTML(e.title)}</h3><p>${escapeHTML(e.person||"No relationship selected")} · ${escapeHTML(e.time)}</p><button class="btn danger delete-event" data-id="${escapeHTML(e.id)}" style="margin-top:10px">Delete event</button></div>`).join(""):'<div class="empty">No personal events on this date.</div>');
+  document.querySelectorAll(".delete-event").forEach(btn=>btn.addEventListener("click",()=>{
+    write(keys.events,read(keys.events).filter(e=>e.id!==btn.dataset.id));
+    renderCalendar();renderHome();toast("Event deleted.");
+  }));
+}
+
+$("eventForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const event={id:id(),title:$("eventTitle").value.trim(),person:$("eventPerson").value,date:$("eventDate").value,time:$("eventTime").value};
+  if(!event.title||!event.date||!event.time){toast("Please enter the event name, date, and time.");return}
+  const events=read(keys.events);
+  events.push(event);write(keys.events,events);
+  selectedDate=event.date;calendarMonth=new Date(event.date+"T12:00:00");
+  $("eventTitle").value="";$("eventPerson").value="";
+  renderCalendar();renderHome();toast("Event added to your calendar.");
+});
+
+function renderHome(){
+  const events=read(keys.events).filter(e=>e.date>=localDateString(new Date())).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,6);
+  $("homeEvents").innerHTML=events.length?events.map(e=>{
+    const d=new Date(e.date+"T12:00:00");
+    return `<div class="event-row"><div class="event-date"><strong>${d.getDate()}</strong><span>${d.toLocaleDateString([],{month:"short"})}</span></div><div class="event-info"><h3>${escapeHTML(e.title)}</h3><p>${escapeHTML(e.person||"Event")} · ${escapeHTML(e.time)}</p></div></div>`;
+  }).join(""):'<div class="empty">No upcoming events. Add one in Calendar & Holidays.</div>';
+  renderHolidayList("homeHolidays",5);
+}
+
+/* Greeting Studio live preview */
+function updatePreview(){
+  $("previewTitle").textContent=$("gTitle").value||"A Special Wish for You";
+  $("previewRecipient").textContent=$("gRecipient").value||"Your special person";
+  $("previewMessage").textContent=$("gMessage").value||"Your heartfelt message will appear here.";
+  $("previewMessage").style.color=$("gColor").value;
+  $("previewMessage").style.fontSize=$("gSize").value+"px";
+  const theme=$("gTheme").value;
+  $("preview").className="preview-card "+(theme==="dream"?"":theme);
+  const effect=$("gEffect").value;
+  const decorations={sparkles:"✨ ✧ ✨",balloons:"🎈 🎈 🎈",confetti:"🎊 ✨ 🎉",hearts:"💖 💗 💖",flowers:"🌸 💐 🌸",none:""};
+  $("previewDecor").textContent=decorations[effect]||"";
+  $("preview").classList.toggle("confetti",effect==="confetti");
+  $("preview").classList.toggle("balloons",effect==="balloons");
+}
+["gTitle","gRecipient","gMessage","gTheme","gEffect","gColor","gSize"].forEach(id=>$ (id).addEventListener("input",updatePreview));
+$("gOccasion").addEventListener("change",()=>{
+  if(!$("gTitle").value||$("gTitle").value==="A Special Wish for You ✨")$("gTitle").value=$("gOccasion").value+" Wishes ✨";
+  updatePreview();
+});
+$("gPhoto").addEventListener("change",()=>{
+  const file=$("gPhoto").files?.[0];
+  if(!file){photoData="";$("previewImage").hidden=true;return}
+  if(!file.type.startsWith("image/")){toast("Please choose an image file.");return}
+  if(file.size>4*1024*1024){toast("Please choose an image smaller than 4 MB.");$("gPhoto").value="";return}
+  const reader=new FileReader();
+  reader.onload=()=>{
+    photoData=String(reader.result||"");
+    $("previewImage").src=photoData;$("previewImage").hidden=false;
+  };
+  reader.readAsDataURL(file);
+});
+$("gMessage").value="Wishing you happiness, laughter, and beautiful memories. May your special day bring you everything that makes you smile! 💜";
+updatePreview();
+
+$("saveGreeting").addEventListener("click",()=>{
+  const recipient=$("gRecipient").value.trim(),message=$("gMessage").value.trim(),date=$("gDate").value,time=$("gTime").value,channel=$("gChannel").value;
+  if(!recipient||!message||!date||!time){toast("Please complete the recipient, message, date, and time.");return}
+  if(channel==="sms"&&!$("gPhone").value.trim()){toast("Enter a mobile number for SMS delivery.");return}
+  if(channel==="whatsapp"&&!$("gPhone").value.trim()){toast("Enter a mobile number for WhatsApp delivery.");return}
+  if(channel==="email"&&!$("gEmail").value.trim()){toast("Enter an email address for email delivery.");return}
+  const item={
+    id:id(),kind:"greeting",occasion:$("gOccasion").value,recipient,
+    relationship:$("gRelationship").value,channel,phone:$("gPhone").value.trim(),
+    email:$("gEmail").value.trim(),date,time,title:$("gTitle").value.trim(),
+    message,theme:$("gTheme").value,effect:$("gEffect").value,
+    color:$("gColor").value,size:$("gSize").value,photo:photoData,
+    created:new Date().toISOString(),status:"Saved locally — delivery not connected"
+  };
+  const greetings=read(keys.greetings);greetings.unshift(item);write(keys.greetings,greetings);
+  renderGreetings();
+  toast("Greeting and delivery plan saved locally. Actual sending still needs a backend.");
+});
+
+$("copyGreeting").addEventListener("click",async()=>{
+  const text=$("gTitle").value+"\n\nDear "+($("gRecipient").value||"friend")+",\n\n"+$("gMessage").value;
+  try{await navigator.clipboard.writeText(text);toast("Greeting text copied.")}
+  catch{toast("Clipboard unavailable. You can select and copy the message manually.")}
+});
+$("previewGreeting").addEventListener("click",()=>{
+  $("preview").scrollIntoView({behavior:"smooth",block:"center"});
+  toast("This is your greeting card preview.");
+});
+$("resetGreeting").addEventListener("click",()=>{
+  $("gTitle").value="A Special Wish for You ✨";
+  $("gMessage").value="";$("gRecipient").value="";
+  $("gTheme").value="dream";$("gEffect").value="sparkles";
+  $("gColor").value="#ffffff";$("gSize").value="17";
+  $("gPhoto").value="";photoData="";$("previewImage").hidden=true;updatePreview();
+  toast("Greeting design reset.");
+});
+
+/* Contacts */
+$("contactForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const contacts=read(keys.contacts);
+  contacts.push({id:id(),name:$("contactName").value.trim(),relation:$("contactRelation").value,phone:$("contactPhone").value.trim(),email:$("contactEmail").value.trim(),birthday:$("contactBirthday").value});
+  write(keys.contacts,contacts);$("contactForm").reset();renderContacts();toast("Contact saved.");
+});
+function renderContacts(){
+  const contacts=read(keys.contacts);
+  $("contactList").innerHTML=contacts.length?contacts.map(c=>`
+    <div class="event-row"><div class="event-date">♡</div><div class="event-info"><h3>${escapeHTML(c.name)}</h3>
+    <p>${escapeHTML(c.relation)}${c.phone?" · "+escapeHTML(c.phone):""}${c.email?"<br>"+escapeHTML(c.email):""}${c.birthday?"<br>Birthday: "+escapeHTML(c.birthday):""}</p>
+    <div class="btn-row"><button class="btn secondary use-contact" data-id="${escapeHTML(c.id)}">Use in greeting</button><button class="btn danger delete-contact" data-id="${escapeHTML(c.id)}">Remove</button></div></div></div>`).join(""):'<div class="empty">No contacts saved yet.</div>';
+  document.querySelectorAll(".delete-contact").forEach(btn=>btn.addEventListener("click",()=>{
+    write(keys.contacts,read(keys.contacts).filter(c=>c.id!==btn.dataset.id));renderContacts();toast("Contact removed.");
+  }));
+  document.querySelectorAll(".use-contact").forEach(btn=>btn.addEventListener("click",()=>{
+    const c=read(keys.contacts).find(c=>c.id===btn.dataset.id);if(!c)return;
+    $("gRecipient").value=c.name;$("gPhone").value=c.phone||"";$("gEmail").value=c.email||"";
+    $("gRelationship").value=["Friend","Relative","Cousin","Love","Mother","Father","Sibling","Colleague","Other"].includes(c.relation)?c.relation:"Other";
+    updatePreview();go("greeting");toast("Contact added to the greeting form.");
+  }));
+}
+
+/* Saved greetings and plans */
+function renderGreetings(){
+  const items=read(keys.greetings);
+  $("greetingList").innerHTML=items.length?items.map(g=>`
+    <div class="template">
+      <h3>${escapeHTML(g.title||g.occasion||"Greeting")}</h3>
+      <p><strong>To:</strong> ${escapeHTML(g.recipient||"")}</p>
+      <p>${escapeHTML(g.message||"")}</p>
+      <p><strong>Plan:</strong> ${escapeHTML(g.date||"")} at ${escapeHTML(g.time||"")} · ${escapeHTML(g.channel||"")}</p>
+      <p>${escapeHTML(g.status||"Saved locally")}</p>
+      <div class="btn-row"><button class="btn secondary copy-saved" data-id="${escapeHTML(g.id)}">Copy message</button><button class="btn secondary edit-saved" data-id="${escapeHTML(g.id)}">Edit in studio</button><button class="btn danger delete-saved" data-id="${escapeHTML(g.id)}">Delete</button></div>
+    </div>`).join(""):'<div class="empty">No saved greetings yet. Open Greeting Studio to create one.</div>';
+  document.querySelectorAll(".copy-saved").forEach(btn=>btn.addEventListener("click",async()=>{
+    const g=read(keys.greetings).find(g=>g.id===btn.dataset.id);if(!g)return;
+    try{await navigator.clipboard.writeText((g.title||"")+"\n\n"+g.message);toast("Message copied.")}
+    catch{toast("Clipboard unavailable.")}
+  }));
+  document.querySelectorAll(".edit-saved").forEach(btn=>btn.addEventListener("click",()=>{
+    const g=read(keys.greetings).find(g=>g.id===btn.dataset.id);if(!g)return;
+    $("gOccasion").value=g.occasion||"Birthday";$("gRecipient").value=g.recipient||"";
+    $("gRelationship").value=g.relationship||"Friend";$("gChannel").value=g.channel||"sms";
+    $("gPhone").value=g.phone||"";$("gEmail").value=g.email||"";
+    $("gDate").value=g.date||"";$("gTime").value=g.time||"09:00";
+    $("gTitle").value=g.title||"";$("gMessage").value=g.message||"";
+    $("gTheme").value=g.theme||"dream";$("gEffect").value=g.effect||"sparkles";
+    $("gColor").value=g.color||"#ffffff";$("gSize").value=g.size||"17";
+    photoData=g.photo||"";
+    if(photoData){$("previewImage").src=photoData;$("previewImage").hidden=false}else $("previewImage").hidden=true;
+    updatePreview();go("greeting");
+  }));
+  document.querySelectorAll(".delete-saved").forEach(btn=>btn.addEventListener("click",()=>{
+    write(keys.greetings,read(keys.greetings).filter(g=>g.id!==btn.dataset.id));renderGreetings();toast("Saved greeting deleted.");
+  }));
+}
+
+$("clearData").addEventListener("click",()=>{
+  if(!confirm("Delete all Wishora events, contacts, and saved greetings from this browser?"))return;
+  Object.values(keys).forEach(k=>localStorage.removeItem(k));
+  renderAll();toast("Local Wishora data cleared.");
+});
+function renderAll(){
+  renderCalendar();renderHome();renderContacts();renderGreetings();renderHolidayList("holidayList",12);
+}
+renderAll();
+</script>
+</body>
+</html>

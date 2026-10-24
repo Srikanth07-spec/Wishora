@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | Wishora</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-icon">✦</span><span>Wishora</span>
+    </a>
+  </header>
+
+  <main class="auth-layout">
+    <section class="intro">
+      <span class="eyebrow">✧ A little joy goes a long way</span>
+      <h1>Turn your feelings into <span class="gradient-text">beautiful wishes.</span></h1>
+      <p>Join Wishora to create thoughtful greetings, celebrate special occasions, and share meaningful moments.</p>
+      <div class="benefits">
+        <div class="benefit"><span class="benefit-icon">💖</span>Make every message personal</div>
+        <div class="benefit"><span class="benefit-icon">🎨</span>Explore creative greeting ideas</div>
+        <div class="benefit"><span class="benefit-icon">🌟</span>Start making memorable moments</div>
+      </div>
+    </section>
+
+    <section class="auth-card">
+      <div class="card-heading">
+        <h2>Create your account</h2>
+        <p>It takes just a moment to get started.</p>
+      </div>
+
+      <form id="registerForm">
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" type="text" placeholder="Enter your full name" autocomplete="name" minlength="2" maxlength="80" required>
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Create password</label>
+          <div class="password-wrap">
+            <input id="password" type="password" placeholder="At least 6 characters" autocomplete="new-password" minlength="6" required>
+            <button class="show-password" type="button" data-target="password">Show</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="confirmPassword">Confirm password</label>
+          <div class="password-wrap">
+            <input id="confirmPassword" type="password" placeholder="Enter password again" autocomplete="new-password" minlength="6" required>
+            <button class="show-password" type="button" data-target="confirmPassword">Show</button>
+          </div>
+        </div>
+        <button class="primary-btn" id="registerBtn" type="submit">Create my account</button>
+      </form>
+
+      <div class="divider-text">OR SIGN UP WITH</div>
+      <button class="google-btn" id="googleBtn" type="button">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+        Continue with Google
+      </button>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <p class="terms">Keep your password private and secure.</p>
+      <p class="switch-auth">Already have an account? <a href="login.html">Log in instead</a></p>
+    </section>
+  </main>
+  <footer class="footer">© 2026 Wishora. Made for moments that matter.</footer>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, updateProfile,
+    GoogleAuthProvider, signInWithPopup
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxvV9EnEsloJqwPRfSWq6Cx1jXUTMgoZI",
+    authDomain: "wishora-3c1cf.firebaseapp.com",
+    projectId: "wishora-3c1cf",
+    storageBucket: "wishora-3c1cf.firebasestorage.app",
+    messagingSenderId: "537135329930",
+    appId: "1:537135329930:web:6c35b706067e5c04bc3373",
+    measurementId: "G-BHFN51VLCK"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+
+  const statusBox = document.getElementById("status");
+  const registerBtn = document.getElementById("registerBtn");
+  const googleBtn = document.getElementById("googleBtn");
+
+  function showStatus(message, type = "error") {
+    statusBox.textContent = message;
+    statusBox.className = "status show " + type;
+  }
+
+  function explainError(error) {
+    const messages = {
+      "auth/unauthorized-domain": "Unauthorized website domain. Use http://localhost:5500 and verify localhost in Firebase Authentication → Settings → Authorized domains.",
+      "auth/popup-closed-by-user": "The Google popup closed before sign-in finished. Please try again.",
+      "auth/popup-blocked": "Chrome blocked the popup. Allow popups for localhost and retry.",
+      "auth/cancelled-popup-request": "A popup request was cancelled. Click Google once and wait.",
+      "auth/operation-not-allowed": "Google sign-in is not enabled in Firebase Authentication.",
+      "auth/email-already-in-use": "An account already exists with this email. Please log in instead.",
+      "auth/invalid-email": "Please enter a valid email address.",
+      "auth/weak-password": "Choose a password with at least 6 characters.",
+      "auth/network-request-failed": "Network request failed. Check your internet connection."
+    };
+    return messages[error.code] || `${error.code || "Error"}: ${error.message || "Please try again."}`;
+  }
+
+  document.querySelectorAll(".show-password").forEach(button => {
+    button.addEventListener("click", () => {
+      const input = document.getElementById(button.dataset.target);
+      input.type = input.type === "password" ? "text" : "password";
+      button.textContent = input.type === "password" ? "Show" : "Hide";
+    });
+  });
+
+  document.getElementById("registerForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (name.length < 2) {
+      showStatus("Please enter your full name.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      showStatus("Passwords do not match.");
+      return;
+    }
+
+    registerBtn.disabled = true;
+    registerBtn.textContent = "Creating account...";
+
+    try {
+      const credential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(credential.user, { displayName: name });
+      showStatus("Account created successfully!", "success");
+      window.location.href = "dashboard.html";
+    } catch (error) {
+      console.error("Registration failed:", error.code, error.message);
+      showStatus(explainError(error));
+
+      if (error.code === "auth/email-already-in-use") {
+        const link = document.createElement("a");
+        link.href = "login.html";
+        link.textContent = " Go to login";
+        statusBox.appendChild(link);
+      }
+    } finally {
+      registerBtn.disabled = false;
+      registerBtn.textContent = "Create my account";
+    }
+  });
+
+  googleBtn.addEventListener("click", async () => {
+    googleBtn.disabled = true;
+    googleBtn.textContent = "Connecting to Google...";
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log("Google sign-up successful:", result.user.email);
+      window.location.href = "dashboard.html";
+    } catch (error) {
+      console.error("Google sign-up failed:", error.code, error.message, error);
+      showStatus(explainError(error));
+    } finally {
+      googleBtn.disabled = false;
+      googleBtn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt=""> Continue with Google';
+    }
+  });
+</script>
+</body>
+</html>

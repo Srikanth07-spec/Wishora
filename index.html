@@ -1,0 +1,898 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111126" />
+  <title>Wishora — Make every moment unforgettable</title>
+  <meta name="description" content="Create heartfelt greetings, design beautiful cards, and schedule your wishes for the perfect moment." />
+
+  <style>
+    :root {
+      --bg: #0c0b1a;
+      --panel: rgba(255,255,255,.065);
+      --line: rgba(255,255,255,.12);
+      --text: #f8f7ff;
+      --muted: #b7b4ce;
+      --pink: #ff77b7;
+      --purple: #a995ff;
+      --mint: #9ff2d2;
+      --gold: #ffd99a;
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 78% 5%, rgba(136,95,255,.23), transparent 34%),
+        radial-gradient(ellipse at 8% 34%, rgba(255,99,177,.12), transparent 30%),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; }
+
+    .wrap {
+      width: min(1160px, calc(100% - 40px));
+      margin: auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: rgba(12,11,26,.88);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .nav {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+      font-size: 1.2rem;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 39px;
+      height: 39px;
+      border-radius: 13px;
+      color: #21142b;
+      background: linear-gradient(135deg, var(--pink), var(--gold));
+      box-shadow: 0 8px 26px rgba(255,119,183,.2);
+      font-size: 1.25rem;
+    }
+
+    .brand-name { color: var(--pink); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      color: var(--muted);
+      font-size: .94rem;
+    }
+
+    .nav-links a:hover,
+    .text-link:hover { color: white; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      padding: 12px 19px;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease,
+        background .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      color: #231326;
+      background: linear-gradient(110deg, var(--pink), #ffb8c9 55%, var(--gold));
+      box-shadow: 0 10px 30px rgba(255,119,183,.17);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 13px 34px rgba(255,119,183,.27);
+    }
+
+    .btn-ghost {
+      border-color: var(--line);
+      background: rgba(255,255,255,.035);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover { background: rgba(255,255,255,.09); }
+
+    .menu-toggle {
+      display: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-radius: 11px;
+      width: 43px;
+      height: 43px;
+      cursor: pointer;
+      font-size: 22px;
+    }
+
+    .mobile-links {
+      display: none;
+      padding: 0 0 18px;
+      gap: 10px;
+    }
+
+    .mobile-links.open { display: grid; }
+
+    .mobile-links a {
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+    }
+
+    .hero {
+      padding: 78px 0 72px;
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      align-items: center;
+      gap: 58px;
+      min-height: 610px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,119,183,.25);
+      background: rgba(255,119,183,.08);
+      border-radius: 999px;
+      padding: 7px 12px;
+      color: #ffd0e5;
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 0 5px rgba(159,242,210,.1);
+    }
+
+    h1 {
+      font-size: clamp(2.7rem, 5.3vw, 4.75rem);
+      letter-spacing: -.065em;
+      line-height: 1.04;
+      margin: 23px 0 22px;
+      max-width: 680px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(105deg, #ff91c5 10%, #c6b5ff 58%, #ffe0a8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy {
+      color: var(--muted);
+      font-size: 1.08rem;
+      max-width: 565px;
+      margin: 0 0 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 13px;
+    }
+
+    .fine-print {
+      color: #8e8aa9;
+      font-size: .82rem;
+      margin-top: 17px;
+    }
+
+    .hero-visual {
+      min-height: 450px;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .orb {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: linear-gradient(140deg,
+        rgba(255,119,183,.22), rgba(169,149,255,.13));
+      filter: blur(1px);
+    }
+
+    .preview-card {
+      width: min(100%, 430px);
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 28px;
+      padding: 20px;
+      background: linear-gradient(150deg,
+        rgba(255,255,255,.13), rgba(255,255,255,.045));
+      box-shadow: 0 30px 100px rgba(0,0,0,.3);
+      transform: rotate(-2deg);
+    }
+
+    .preview-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #d7d2ed;
+      font-size: .8rem;
+    }
+
+    .live-pill {
+      border: 1px solid rgba(159,242,210,.23);
+      color: var(--mint);
+      border-radius: 99px;
+      padding: 4px 9px;
+      font-size: .72rem;
+    }
+
+    .greeting-art {
+      margin-top: 16px;
+      min-height: 250px;
+      border-radius: 20px;
+      overflow: hidden;
+      padding: 24px;
+      position: relative;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,231,177,.9), transparent 20%),
+        radial-gradient(circle at 18% 85%, rgba(255,119,183,.85), transparent 35%),
+        linear-gradient(135deg, #6544a7, #29234f 65%, #17172e);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .greeting-art:before,
+    .greeting-art:after {
+      content: "✦";
+      position: absolute;
+      color: rgba(255,255,255,.8);
+      font-size: 1.4rem;
+    }
+
+    .greeting-art:before { top: 22px; right: 35px; }
+
+    .greeting-art:after {
+      bottom: 25px;
+      right: 60px;
+      font-size: 1rem;
+    }
+
+    .art-small {
+      text-transform: uppercase;
+      letter-spacing: .22em;
+      font-size: .68rem;
+      color: #f9ddec;
+    }
+
+    .art-title {
+      font-family: Georgia, serif;
+      font-size: clamp(2.4rem, 4vw, 3.35rem);
+      line-height: 1.05;
+      margin: 11px 0;
+      letter-spacing: -.05em;
+    }
+
+    .art-message {
+      color: #f2e8ff;
+      max-width: 245px;
+      font-size: .9rem;
+    }
+
+    .preview-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 16px;
+    }
+
+    .avatar-stack { display: flex; align-items: center; }
+
+    .avatar {
+      width: 29px;
+      height: 29px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid #29213f;
+      margin-left: -7px;
+      font-size: .72rem;
+      background: #e9b4d4;
+      color: #2c1d36;
+    }
+
+    .avatar:first-child { margin-left: 0; background: #b7e9d5; }
+    .avatar:last-child { background: #ffdca0; }
+
+    .footer-label { color: #c4bfdc; font-size: .77rem; }
+
+    .floating {
+      position: absolute;
+      z-index: 2;
+      border: 1px solid var(--line);
+      background: rgba(23,21,45,.92);
+      backdrop-filter: blur(14px);
+      border-radius: 16px;
+      padding: 12px 15px;
+      box-shadow: 0 15px 40px rgba(0,0,0,.2);
+    }
+
+    .floating strong { display: block; font-size: .85rem; }
+    .floating small { color: var(--muted); font-size: .73rem; }
+
+    .float-one { top: 42px; right: -6px; }
+    .float-two { bottom: 36px; left: -16px; }
+
+    .float-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      background: rgba(159,242,210,.12);
+      margin-right: 7px;
+    }
+
+    .float-row { display: flex; align-items: center; }
+
+    .trust-row {
+      border-top: 1px solid rgba(255,255,255,.08);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 20px 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      color: #aaa5c3;
+      font-size: .88rem;
+    }
+
+    .trust-row span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    section.content-section { padding: 86px 0; }
+
+    .section-head {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 42px;
+    }
+
+    .kicker {
+      color: var(--pink);
+      font-weight: 800;
+      font-size: .78rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 3.7vw, 3rem);
+      letter-spacing: -.045em;
+      line-height: 1.12;
+      margin: 13px 0;
+    }
+
+    .section-head p { color: var(--muted); margin: 0; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg,
+        rgba(255,255,255,.065), rgba(255,255,255,.025));
+      transition: transform .2s ease, border-color .2s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,119,183,.38);
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+      background: rgba(169,149,255,.13);
+    }
+
+    .feature:nth-child(2) .feature-icon,
+    .feature:nth-child(5) .feature-icon {
+      background: rgba(255,119,183,.12);
+    }
+
+    .feature:nth-child(3) .feature-icon,
+    .feature:nth-child(6) .feature-icon {
+      background: rgba(159,242,210,.1);
+    }
+
+    .feature h3 { margin: 0 0 8px; font-size: 1.08rem; }
+    .feature p { margin: 0; color: var(--muted); font-size: .91rem; }
+
+    .how-panel {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 50px;
+      align-items: center;
+      padding: 38px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(120deg,
+        rgba(169,149,255,.1), rgba(255,119,183,.06));
+    }
+
+    .how-panel p { color: var(--muted); }
+    .steps { display: grid; gap: 17px; }
+
+    .step { display: flex; gap: 14px; align-items: flex-start; }
+
+    .step-num {
+      flex: 0 0 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(255,255,255,.09);
+      color: #ffc6df;
+      font-weight: 800;
+    }
+
+    .step strong { display: block; margin-bottom: 2px; }
+    .step small { color: var(--muted); font-size: .87rem; }
+
+    .cta {
+      text-align: center;
+      padding: 55px 24px;
+      border-radius: 28px;
+      border: 1px solid rgba(255,119,183,.2);
+      background: radial-gradient(ellipse at 50% 0%,
+        rgba(169,149,255,.17), transparent 65%),
+        rgba(255,255,255,.035);
+    }
+
+    .cta p {
+      color: var(--muted);
+      margin: 0 auto 24px;
+      max-width: 530px;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 25px 0;
+      color: #9792b0;
+      font-size: .83rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links { display: flex; gap: 20px; }
+
+    @media (max-width: 900px) {
+      .nav-links { gap: 16px; }
+      .hero { gap: 25px; }
+      .float-one { right: -4px; }
+      .float-two { left: -4px; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .how-panel { gap: 25px; padding: 28px; }
+    }
+
+    @media (max-width: 700px) {
+      .wrap { width: min(calc(100% - 30px), 560px); }
+      .nav { min-height: 68px; }
+      .nav-links { display: none; }
+      .nav-actions { margin-left: auto; }
+      .nav-actions .btn { padding: 10px 12px; font-size: .86rem; }
+      .menu-toggle { display: block; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 56px 0 46px;
+        gap: 16px;
+        min-height: auto;
+      }
+
+      h1 { font-size: clamp(2.75rem, 13vw, 4rem); }
+      .hero-copy { font-size: 1rem; }
+      .hero-visual { min-height: 405px; margin: 0 4px; }
+      .preview-card { transform: none; padding: 14px; }
+      .greeting-art { min-height: 230px; padding: 20px; }
+      .float-one { top: 8px; right: -2px; }
+      .float-two { bottom: 8px; left: -2px; }
+      .trust-row { gap: 14px 22px; font-size: .8rem; }
+      section.content-section { padding: 64px 0; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature { padding: 21px; }
+      .how-panel { grid-template-columns: 1fr; padding: 24px; }
+      .cta { padding: 40px 20px; }
+    }
+
+    @media (max-width: 400px) {
+      .nav-actions .btn { padding: 9px; }
+      .nav { gap: 8px; }
+      .brand { font-size: 1.05rem; }
+      .brand-mark { width: 34px; height: 34px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="index.html" aria-label="Wishora home">
+        <span class="brand-mark">✦</span>
+        <span>Wish<span class="brand-name">ora</span></span>
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn btn-ghost" href="login.html">Log in</a>
+        <a class="btn btn-primary" href="register.html">
+          Get started <span aria-hidden="true">↗</span>
+        </a>
+        <button class="menu-toggle" id="menuToggle"
+                aria-label="Open navigation menu"
+                aria-expanded="false" aria-controls="mobileLinks">
+          ☰
+        </button>
+      </div>
+    </div>
+
+    <nav class="wrap mobile-links" id="mobileLinks"
+         aria-label="Mobile navigation">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#about">About</a>
+      <a href="login.html">Log in to your account</a>
+      <a href="register.html">Create a new account</a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <div class="wrap hero">
+      <div>
+        <div class="eyebrow">
+          <span class="pulse"></span>
+          Make every moment feel special
+        </div>
+
+        <h1>
+          Your feelings.<br />
+          <span class="gradient-text">Beautifully delivered.</span>
+        </h1>
+
+        <p class="hero-copy">
+          Create heartfelt greetings, turn your thoughts into meaningful
+          messages with AI, and send a little happiness at exactly the
+          right moment.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="register.html">
+            Get started for free <span aria-hidden="true">→</span>
+          </a>
+          <a class="btn btn-ghost" href="#features">
+            <span aria-hidden="true">✧</span> Explore features
+          </a>
+        </div>
+
+        <p class="fine-print">
+          Create a greeting in minutes. Save it, share it, or schedule it for later.
+        </p>
+      </div>
+
+      <div class="hero-visual" aria-label="Preview of a personalized greeting card">
+        <div class="orb"></div>
+
+        <div class="floating float-one">
+          <div class="float-row">
+            <span class="float-icon">✉</span>
+            <div>
+              <strong>Wish scheduled</strong>
+              <small>Ready for the perfect moment</small>
+            </div>
+          </div>
+        </div>
+
+        <article class="preview-card">
+          <div class="preview-top">
+            <span>YOUR PERSONAL GREETING</span>
+            <span class="live-pill">● Preview</span>
+          </div>
+
+          <div class="greeting-art">
+            <div class="art-small">A little note, just for you</div>
+            <div class="art-title">Happy<br />Birthday!</div>
+            <p class="art-message">
+              May your next chapter be full of laughter, wonderful surprises,
+              and everything that makes you smile.
+            </p>
+          </div>
+
+          <div class="preview-footer">
+            <div class="avatar-stack" aria-hidden="true">
+              <span class="avatar">S</span>
+              <span class="avatar">♡</span>
+              <span class="avatar">✦</span>
+            </div>
+            <span class="footer-label">Made with care on Wishora</span>
+          </div>
+        </article>
+
+        <div class="floating float-two">
+          <div class="float-row">
+            <span class="float-icon">✦</span>
+            <div>
+              <strong>Made from the heart</strong>
+              <small>AI helps shape your own words</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trust-row">
+      <span>♡ Personal messages</span>
+      <span>✦ AI writing assistant</span>
+      <span>◷ Scheduled wishes</span>
+      <span>↗ Shareable greeting pages</span>
+    </div>
+
+    <section class="content-section" id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">Everything in one place</div>
+          <h2>Small moments deserve <span class="gradient-text">big feelings.</span></h2>
+          <p>
+            Thoughtful tools to help you create a greeting that feels personal,
+            looks beautiful, and reaches someone at the right time.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="feature-icon">✍️</div>
+            <h3>AI greeting writer</h3>
+            <p>
+              Share a few honest points, memories, or feelings. Turn them
+              into a warm message you can edit until it sounds like you.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature-icon">🎨</div>
+            <h3>Beautiful card designer</h3>
+            <p>
+              Personalize your greeting with photos, colors, typography,
+              decorative details, and thoughtfully designed templates.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature-icon">🔗</div>
+            <h3>Shareable greeting pages</h3>
+            <p>
+              Create a special page for your greeting and share it through
+              a link, so your recipient can open it on any device.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature-icon">🕰️</div>
+            <h3>Live clock & calendar</h3>
+            <p>
+              Keep track of the date, time, birthdays, anniversaries,
+              and upcoming occasions from your dashboard.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature-icon">📨</div>
+            <h3>Schedule a wish</h3>
+            <p>
+              Choose a date and time for email delivery. Your greeting
+              can be sent even when you are away from the website.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature-icon">🎉</div>
+            <h3>Occasions & reminders</h3>
+            <p>
+              Organize birthdays, holidays, celebrations, and personal
+              milestones so important dates are easier to remember.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section" id="how-it-works">
+      <div class="wrap">
+        <div class="how-panel">
+          <div>
+            <div class="kicker">Simple by design</div>
+            <h2>From a few words to a moment they'll remember.</h2>
+            <p>
+              You bring the feeling. Wishora helps you shape it, design it,
+              and deliver it thoughtfully.
+            </p>
+            <a class="btn btn-primary" href="register.html">
+              Create your first greeting <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <span class="step-num">01</span>
+              <div>
+                <strong>Write what you feel</strong>
+                <small>Start with a few personal points or a memory.</small>
+              </div>
+            </div>
+
+            <div class="step">
+              <span class="step-num">02</span>
+              <div>
+                <strong>Make it yours</strong>
+                <small>Use AI suggestions, add photos, and customize your design.</small>
+              </div>
+            </div>
+
+            <div class="step">
+              <span class="step-num">03</span>
+              <div>
+                <strong>Choose how it arrives</strong>
+                <small>Share the page now or schedule an email for a special time.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section" id="about">
+      <div class="wrap">
+        <div class="cta">
+          <div class="kicker">Your next special moment starts here</div>
+          <h2>Make your wishes <span class="gradient-text">mean more.</span></h2>
+          <p>
+            Build a thoughtful greeting, make it personal,
+            and give someone a reason to smile.
+          </p>
+          <a class="btn btn-primary" href="register.html">
+            Get started with Wishora <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">✦</span>
+        <span>Wish<span class="brand-name">ora</span></span>
+      </a>
+
+      <span>Made for the moments that matter. ©
+        <span id="year"></span> Wishora
+      </span>
+
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="login.html">Log in</a>
+        <a href="register.html">Register</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const menuToggle = document.getElementById("menuToggle");
+    const mobileLinks = document.getElementById("mobileLinks");
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = mobileLinks.classList.toggle("open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      menuToggle.setAttribute(
+        "aria-label",
+        isOpen ? "Close navigation menu" : "Open navigation menu"
+      );
+      menuToggle.textContent = isOpen ? "✕" : "☰";
+    });
+
+    mobileLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileLinks.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Open navigation menu");
+        menuToggle.textContent = "☰";
+      });
+    });
+  </script>
+</body>
+</html>
